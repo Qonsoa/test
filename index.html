@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Reset أي تأثيرات خارجية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #app {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        /* إخفاء شريط التمرير في iframe */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="widget.js"></script>
+    <script>
+        // كود اتصال مع الـ embed
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            const domain = params.get('domain');
+            
+            // Store for widget.js to use
+            window.WIDGET_CONFIG = {
+                token: token,
+                domain: domain,
+                parentOrigin: window.location.origin
+            };
+            
+            // Handle parent messages
+            window.addEventListener('message', function(event) {
+                // We can add parent control logic here if needed
+                if (event.data.type === 'visibility') {
+                    // Handle visibility changes
+                }
+            });
+            
+            // Notify parent about resize
+            function notifyParent(state) {
+                if (window.parent) {
+                    window.parent.postMessage({
+                        type: 'resize',
+                        state: state
+                    }, window.WIDGET_CONFIG.parentOrigin);
+                }
+            }
+            
+            // Expose resize notification
+            window.notifyParentResize = notifyParent;
+        })();
+    </script>
+</body>
+</html>
